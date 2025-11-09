@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import CIcon from '@coreui/icons-react'
 import {
-    CButton,
+  CButton,
   CCard,
   CCardBody,
   CCardHeader,
@@ -12,14 +12,13 @@ import {
   CTableHeaderCell,
   CTableRow,
 } from '@coreui/react'
-import { cilEnvelopeLetter, cilMap, cilPhone, cilUser } from '@coreui/icons'
+import { cilEnvelopeLetter, cilMap, cilPencil, cilPhone, cilPlus, cilTrash, cilUser, cilUserPlus } from '@coreui/icons'
 import CustomerAdd from './CustomerAdd'
 
 function CustomerList() {
   const [customers, setCustomers] = useState([])
   const [modalVisible, setModalVisible] = useState(false)
 
- 
   const fetchCustomers = async () => {
     try {
       const response = await fetch('http://localhost:8080/api/customer/list') // replace with your API
@@ -34,24 +33,33 @@ function CustomerList() {
   useEffect(() => {
     fetchCustomers()
   }, [])
- const handleCustomerAdded = (newCustomer) => {
-     fetchCustomers()
+  const handleCustomerAdded = (newCustomer) => {
+    fetchCustomers()
   }
   return (
     <CCard>
-      <CCardHeader>Customer List</CCardHeader>
-      <CButton color="primary" onClick={() => setModalVisible(true)}>
-        Add Customer
-      </CButton>
+      <CCardHeader>
+        <div className="d-flex justify-content-between align-items-center  ">
+          <div>
+            <div className="h3">Customer List</div>
+          </div>
+          <div >
+            <CButton className='d-flex justify-content-between gap-1 align-items-center' color="primary" onClick={() => setModalVisible(true)}>
+              <CIcon icon={cilUserPlus}  />
+              Add Customer
+            </CButton>
+          </div>
+        </div>
+      </CCardHeader>
       <CCardBody>
-        <CTable striped hover responsive>
-          <CTableHead>
+        <CTable   hover responsive>
+          <CTableHead color="light" >
             <CTableRow>
               <CTableHeaderCell>#</CTableHeaderCell>
               <CTableHeaderCell>Name</CTableHeaderCell>
               <CTableHeaderCell>Email</CTableHeaderCell>
               <CTableHeaderCell>Phone</CTableHeaderCell>
-              <CTableHeaderCell>Address</CTableHeaderCell>
+              <CTableHeaderCell>Action</CTableHeaderCell>
             </CTableRow>
           </CTableHead>
           <CTableBody>
@@ -66,20 +74,23 @@ function CustomerList() {
                 <CTableRow key={customer._id}>
                   <CTableDataCell>{index + 1}</CTableDataCell>
                   <CTableDataCell>
-                    <CIcon icon={cilUser} className="me-2" />
                     {customer.customer_name}
                   </CTableDataCell>
                   <CTableDataCell>
-                    <CIcon icon={cilEnvelopeLetter} className="me-2" />
                     {customer.customer_email}
                   </CTableDataCell>
                   <CTableDataCell>
-                    <CIcon icon={cilPhone} className="me-2" />
                     {customer.customer_phone}
                   </CTableDataCell>
                   <CTableDataCell>
-                    <CIcon icon={cilMap} className="me-2" />
-                    {customer.customer_address}
+                    <div className='d-flex justify-content-start gap-1 align-items-center'>
+                      <div className='btn btn-sm'>
+                                <CIcon icon={cilPencil} className='text-success'></CIcon>
+                      </div>
+                      <div className='btn btn-sm'>
+                      <CIcon icon={cilTrash} className='text-danger  '></CIcon>
+                      </div>
+                    </div>
                   </CTableDataCell>
                 </CTableRow>
               ))

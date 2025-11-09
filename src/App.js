@@ -27,13 +27,11 @@ const App = () => {
     if (theme) {
       setColorMode(theme)
     }
-
     if (isColorModeSet()) {
       return
     }
-
     setColorMode(storedTheme)
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <BrowserRouter>
