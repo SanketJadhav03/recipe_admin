@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom"
 import { API_URL } from "../helper/url_helper"
+import { useState } from "react"
+import axios from "axios"
 
  
 
@@ -56,9 +58,6 @@ export default function AuthUser() {
     user,
     http,
     https,
-    logout,
-    checkPermission,
-    permission,
-    checkSubscription,
+    logout,  
   }
 }
