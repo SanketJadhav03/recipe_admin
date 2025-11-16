@@ -107,13 +107,12 @@ function CustomerAdd({ visible, onClose, onCustomerAdded }) {
       <CForm onSubmit={handleSubmit}>
         <CModalBody>
           <div className="mb-3">
-            <CFormLabel>Name</CFormLabel> 
+            <CFormLabel>Name</CFormLabel>
             <CFormInput
               type="text"
               name="customer_name"
               value={customer.customer_name}
               onChange={handleChange}
-              required
             />
           </div>
           <div className="mb-3">
@@ -123,7 +122,6 @@ function CustomerAdd({ visible, onClose, onCustomerAdded }) {
               name="customer_email"
               value={customer.customer_email}
               onChange={handleChange}
-              required
             />
           </div>
           <div className="mb-3">
@@ -133,7 +131,6 @@ function CustomerAdd({ visible, onClose, onCustomerAdded }) {
               name="customer_password"
               value={customer.customer_password}
               onChange={handleChange}
-              required
             />
           </div>
           <div className="mb-3">
@@ -143,7 +140,6 @@ function CustomerAdd({ visible, onClose, onCustomerAdded }) {
               name="customer_phone"
               value={customer.customer_phone}
               onChange={handleChange}
-              required
             />
           </div>
           <div className="mb-3">
@@ -152,7 +148,6 @@ function CustomerAdd({ visible, onClose, onCustomerAdded }) {
               name="customer_address"
               value={customer.customer_address}
               onChange={handleChange}
-              required
             />
           </div>
         </CModalBody>
