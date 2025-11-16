@@ -72,7 +72,7 @@ function CustomerUpdate({ visible, onClose, editData, onCustomerAdded }) {
       <CForm onSubmit={handleSubmit}>
         <CModalBody>
           <div className="mb-3">
-            <CFormLabel>Name</CFormLabel>
+            <CFormLabel>Name</CFormLabel> 
             <CFormInput
               name="customer_name"
               value={customer.customer_name || ''}

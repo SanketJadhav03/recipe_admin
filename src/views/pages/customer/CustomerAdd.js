@@ -107,7 +107,7 @@ function CustomerAdd({ visible, onClose, onCustomerAdded }) {
       <CForm onSubmit={handleSubmit}>
         <CModalBody>
           <div className="mb-3">
-            <CFormLabel>Name</CFormLabel>
+            <CFormLabel>Name</CFormLabel> 
             <CFormInput
               type="text"
               name="customer_name"
