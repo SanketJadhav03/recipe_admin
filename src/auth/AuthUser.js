@@ -1,16 +1,12 @@
-import { useNavigate } from "react-router-dom"
-import { API_URL } from "../helper/url_helper"
-import { useState } from "react"
-import axios from "axios"
-
- 
+import { useNavigate } from 'react-router-dom'
+import { API_URL } from '../helper/url_helper'
+import { useState } from 'react'
+import axios from 'axios'
 
 export default function AuthUser() {
   const navigate = useNavigate()
   const getToken = () => {
-    const tokenString = sessionStorage.getItem('token')
-    const userToken = JSON.parse(tokenString)
-    return userToken
+    return sessionStorage.getItem('token') // ✅ just return the string
   }
 
   const getUser = () => {
@@ -24,7 +20,7 @@ export default function AuthUser() {
   const saveToken = (user, token) => {
     sessionStorage.setItem('token', JSON.stringify(token))
     sessionStorage.setItem('authUser', JSON.stringify(user))
-    setUser(user);
+    setUser(user)
   }
 
   const http = axios.create({
@@ -51,13 +47,13 @@ export default function AuthUser() {
     setUser(null)
     navigate('/login')
   }
- 
+
   return {
     setToken: saveToken,
     token,
     user,
     http,
     https,
-    logout,  
+    logout,
   }
 }

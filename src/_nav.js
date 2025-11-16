@@ -54,7 +54,7 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'Cuisine Categories',
+        name: 'Cuisine',
         to: '/cuisines',
       },
       {
@@ -69,7 +69,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Serving Sizes',
+        name: 'Serving Count',
         to: '/servingcount',
       },
       {

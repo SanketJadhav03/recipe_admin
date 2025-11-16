@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   CButton,
   CModal,
@@ -11,8 +11,11 @@ import {
   CFormLabel,
   CFormTextarea,
 } from '@coreui/react'
+import { toast } from 'react-toastify'
+import AuthUser from '../../../auth/AuthUser'
 
 function CustomerAdd({ visible, onClose, onCustomerAdded }) {
+  const { http } = AuthUser()
   const [customer, setCustomer] = useState({
     customer_name: '',
     customer_email: '',
@@ -28,27 +31,74 @@ function CustomerAdd({ visible, onClose, onCustomerAdded }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    // ==========================
+    // ⭐ FORM VALIDATION
+    // ==========================
+    if (!customer.customer_name?.trim()) {
+      toast.error('Customer name is required!')
+      return
+    }
+
+    if (!customer.customer_email?.trim()) {
+      toast.error('Email is required!')
+      return
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(customer.customer_email)) {
+      toast.error('Invalid email address!')
+      return
+    }
+
+    if (!customer.customer_phone?.trim()) {
+      toast.error('Phone number is required!')
+      return
+    }
+
+    if (customer.customer_phone.length < 10) {
+      toast.error('Phone must be at least 10 digits!')
+      return
+    }
+
+    if (!customer.customer_address?.trim()) {
+      toast.error('Address is required!')
+      return
+    }
+
     setLoading(true)
+
     try {
-      const response = await fetch('http://localhost:8080/api/customer/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(customer),
-      })
-      const data = await response.json()
-      if (data.status == 1) {
-        onCustomerAdded(data)
-        onClose() // Close modal after adding
+      const res = await http.put(`/customer/update/${customer._id}`, customer)
+
+      if (res.data?.status === 1) {
+        toast.success('Customer updated successfully!')
+        onCustomerAdded()
+        onClose()
       } else {
-        alert('Error adding customer')
+        toast.error(res.data?.message || 'Failed to update!')
       }
     } catch (error) {
-      console.error('Error:', error)
-      alert('Error adding customer')
+      toast.error(error.response?.data?.message || 'Something went wrong!')
+      console.log(error)
     }
+
     setLoading(false)
   }
 
+  useEffect(() => {
+    const handleShortcut = (e) => {
+      if (e.altKey && e.key.toLowerCase() === 'c') {
+        onClose()
+      }
+      if (e.altKey && e.key.toLowerCase() === 's') {
+        handleSubmit(e)
+      }
+    }
+
+    window.addEventListener('keydown', handleShortcut)
+    return () => window.removeEventListener('keydown', handleShortcut)
+  }, [])
   return (
     <CModal visible={visible} onClose={onClose}>
       <CModalHeader>

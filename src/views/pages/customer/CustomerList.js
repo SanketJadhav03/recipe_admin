@@ -12,30 +12,49 @@ import {
   CTableHeaderCell,
   CTableRow,
 } from '@coreui/react'
-import { cilEnvelopeLetter, cilMap, cilPencil, cilPhone, cilPlus, cilTrash, cilUser, cilUserPlus } from '@coreui/icons'
+import { cilPencil, cilTrash, cilUserPlus } from '@coreui/icons'
 import CustomerAdd from './CustomerAdd'
+import AuthUser from '../../../auth/AuthUser'
+import CustomerUpdate from './CustomerUpdate'
 
 function CustomerList() {
   const [customers, setCustomers] = useState([])
+  const [editData, setEditData] = useState({})
   const [modalVisible, setModalVisible] = useState(false)
-
+  const { http } = AuthUser()
   const fetchCustomers = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/customer/list') // replace with your API
-      const data = await response.json()
-      setCustomers(data)
+      http
+        .get('/customer/list')
+        .then((res) => {
+          setCustomers(res.data)
+        })
+        .catch((err) => {
+          console.log('====================================')
+          console.log(err)
+          console.log('====================================')
+        })
     } catch (error) {
       console.error('Error fetching customers:', error)
     }
   }
 
+  useEffect(() => {
+    const handleShortcut = (e) => {
+      if (e.altKey && e.key.toLowerCase() === 'a') {
+        setModalVisible(true)
+      }
+    }
+
+    window.addEventListener('keydown', handleShortcut)
+    return () => window.removeEventListener('keydown', handleShortcut)
+  }, [])
+
   // Fetch customer data from API
   useEffect(() => {
     fetchCustomers()
   }, [])
-  const handleCustomerAdded = (newCustomer) => {
-    fetchCustomers()
-  }
+
   return (
     <CCard>
       <CCardHeader>
@@ -43,56 +62,59 @@ function CustomerList() {
           <div>
             <div className="h3">Customer List</div>
           </div>
-          <div >
-            <CButton className='d-flex justify-content-between gap-1 align-items-center' color="primary" onClick={() => setModalVisible(true)}>
-              <CIcon icon={cilUserPlus}  />
+          <div>
+            <CButton
+              className="d-flex justify-content-between gap-1 align-items-center"
+              color="primary"
+              onClick={() => setModalVisible(true)}
+            >
+              <CIcon icon={cilUserPlus} />
               Add Customer
             </CButton>
           </div>
         </div>
       </CCardHeader>
       <CCardBody>
-        <CTable   hover responsive>
-          <CTableHead color="light" >
-            <CTableRow>
-              <CTableHeaderCell>#</CTableHeaderCell>
-              <CTableHeaderCell>Name</CTableHeaderCell>
-              <CTableHeaderCell>Email</CTableHeaderCell>
-              <CTableHeaderCell>Phone</CTableHeaderCell>
-              <CTableHeaderCell>Action</CTableHeaderCell>
-            </CTableRow>
-          </CTableHead>
+        <CTable hover responsive>
+          <thead>
+            <tr className="bg-light">
+              <th>#</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Action</th>
+            </tr>
+          </thead>
           <CTableBody>
             {customers.length === 0 ? (
-              <CTableRow>
-                <CTableDataCell colSpan={5} className="text-center">
+              <tr>
+                <td colSpan={5} className="text-center">
                   No customers found
-                </CTableDataCell>
-              </CTableRow>
+                </td>
+              </tr>
             ) : (
               customers.map((customer, index) => (
-                <CTableRow key={customer._id}>
-                  <CTableDataCell>{index + 1}</CTableDataCell>
-                  <CTableDataCell>
-                    {customer.customer_name}
-                  </CTableDataCell>
-                  <CTableDataCell>
-                    {customer.customer_email}
-                  </CTableDataCell>
-                  <CTableDataCell>
-                    {customer.customer_phone}
-                  </CTableDataCell>
-                  <CTableDataCell>
-                    <div className='d-flex justify-content-start gap-1 align-items-center'>
-                      <div className='btn btn-sm'>
-                                <CIcon icon={cilPencil} className='text-success'></CIcon>
+                <tr key={customer._id}>
+                  <td>{index + 1}</td>
+                  <td>{customer.customer_name}</td>
+                  <td>{customer.customer_email}</td>
+                  <td>{customer.customer_phone}</td>
+                  <td>
+                    <div className="d-flex justify-content-start gap-1 align-items-center">
+                      <div
+                        className="btn btn-sm btn-success"
+                        onClick={() => {
+                          setEditData(customer)
+                        }}
+                      >
+                        <CIcon icon={cilPencil} className="text-white"></CIcon>
                       </div>
-                      <div className='btn btn-sm'>
-                      <CIcon icon={cilTrash} className='text-danger  '></CIcon>
+                      <div className="btn btn-sm btn-danger text-white">
+                        <CIcon icon={cilTrash}></CIcon>
                       </div>
                     </div>
-                  </CTableDataCell>
-                </CTableRow>
+                  </td>
+                </tr>
               ))
             )}
           </CTableBody>
@@ -102,7 +124,17 @@ function CustomerList() {
       <CustomerAdd
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
-        onCustomerAdded={handleCustomerAdded}
+        onCustomerAdded={() => {
+          fetchCustomers()
+        }}
+      />
+      <CustomerUpdate
+        visible={editData?.customer_name ? true : false}
+        onClose={() => setEditData({})}
+        editData={editData}
+        onCustomerAdded={() => {
+          fetchCustomers()
+        }}
       />
     </CCard>
   )
