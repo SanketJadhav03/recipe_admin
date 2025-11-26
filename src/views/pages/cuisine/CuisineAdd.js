@@ -8,6 +8,7 @@ import AuthUser from '../../../auth/AuthUser'
 function CuisineAdd(props) {
   const [cuisine, setCuisine] = useState({
     cuisine_name: '',
+    cuisine_status: 1,
   })
   const submitRef = useRef(null)
   const inputRef = useRef(null)
@@ -72,6 +73,7 @@ function CuisineAdd(props) {
               }}
             />
           </div>
+          
 
           <div className="text-end mt-4">
             <div ref={submitRef} className="btn btn-success text-light shadow" onClick={saveData}>
