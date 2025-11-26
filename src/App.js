@@ -7,7 +7,7 @@ import './scss/style.scss'
 
 // We use those styles to show code examples, you should remove them in your application.
 import './scss/examples.scss'
-import PrivateRoute from './auth/PrivateRoutes'
+import PrivateRoute from './auth/PrivateRoutes' 
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))

@@ -50,12 +50,12 @@ const Login = () => {
   }
 
   return (
-    <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
+    <div className="  min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
         <CRow className="justify-content-center">
           <CCol md={6} lg={4}>
             <CCardGroup>
-              <CCard className="p-4 shadow-lg border-0 rounded-4">
+              <CCard className="p-4  shadow-lg border-0 rounded-4">
                 <CCardBody>
                   <CForm onSubmit={handleLogin}>
                     <div className="text-center mb-4">
