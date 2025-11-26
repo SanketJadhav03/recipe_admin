@@ -129,6 +129,7 @@ function CuisineList() {
           modalStates={edit_data != null}
           setModalStates={() => {
             setEditData(null)
+            setCount(count+1)
           }}
         />
       )}

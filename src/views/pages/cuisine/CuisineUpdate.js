@@ -1,20 +1,21 @@
 import { cilSave, cilX } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { toast } from 'react-toastify'
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
 import AuthUser from '../../../auth/AuthUser'
 
 function CuisineUpdate(props) {
   const [cuisine, setCuisine] = useState(props.edit_data)
+  const submitRef = useRef(null)
   const { http } = AuthUser()
   useEffect(() => {
     const handleShortcut = (e) => {
-      if (e.altKey && e.key.toLowerCase() === 'c') {
+      if (e.altKey && e.key.toLowerCase() === 'x') {
         props.setModalStates()
       }
       if (e.altKey && e.key.toLowerCase() === 's') {
-        saveData()
+        submitRef.current.click()
       }
     }
 
@@ -30,8 +31,9 @@ function CuisineUpdate(props) {
         .then((res) => {
           if (res.data.status == 0) {
             toast.error(res.data.message)
-          } else {
+        } else {
             toast.success(res.data.message)
+            props.setModalStates()
           }
         })
         .catch((err) => {
@@ -45,7 +47,7 @@ function CuisineUpdate(props) {
     <Modal size="md" isOpen={props.modalStates} toggle={props.setModalStates} centered>
       <ModalHeader toggle={props.setModalStates}>
         <div className="d-flex justify-content-between">
-          <div className="">Add Cuisines</div>
+          <div className="">Update Cuisines</div>
         </div>
       </ModalHeader>
       <ModalBody className="rounded">
@@ -66,7 +68,7 @@ function CuisineUpdate(props) {
           </div>
 
           <div className="text-end mt-4">
-            <div className="btn btn-success text-light shadow" onClick={saveData}>
+            <div className="btn btn-success text-light shadow" ref={submitRef} onClick={saveData}>
               <CIcon icon={cilSave} className="me-1 text-white" /> Save
             </div>
             <div className="ms-2 btn btn-danger text-light shadow" onClick={props.setModalStates}>

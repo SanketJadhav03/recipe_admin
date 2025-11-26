@@ -13,8 +13,9 @@ function CuisineAdd(props) {
   const inputRef = useRef(null)
   const { http } = AuthUser()
   useEffect(() => {
+    
     const handleShortcut = (e) => {
-      if (e.altKey && e.key.toLowerCase() === 'c') {
+      if (e.altKey && e.key.toLowerCase() === 'x') {
         props.setModalStates()
       }
       if (e.altKey && e.key.toLowerCase() === 's') {
@@ -58,7 +59,7 @@ function CuisineAdd(props) {
         <div className="  p-2 ">
           <div>
             <div className="fw-bold mb-2">Cuisine Name</div>
-            <input
+            <input 
               className="form-control"
               placeholder="Cuisine Name"
               ref={inputRef}
