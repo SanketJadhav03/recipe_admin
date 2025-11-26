@@ -89,7 +89,13 @@ function CuisineList() {
                 <tr key={index}>
                   <td>{index + 1}</td>
                   <td>{item.cuisine_name}</td>
-                  <td>{item.cuisine_status}</td>
+                  <td>
+                    {item.cuisine_status == 1 ? (
+                      <div className="badge bg-success">Active</div>
+                    ) : (
+                      <div className="badge bg-danger">Inactive</div>
+                    )}
+                  </td>
                   <td>
                     <div
                       className="btn btn-info shadow text-white btn-sm me-1"
@@ -129,7 +135,7 @@ function CuisineList() {
           modalStates={edit_data != null}
           setModalStates={() => {
             setEditData(null)
-            setCount(count+1)
+            setCount(count + 1)
           }}
         />
       )}
