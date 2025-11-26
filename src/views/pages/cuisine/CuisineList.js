@@ -1,22 +1,24 @@
-import { cilPlus } from '@coreui/icons'
+import { cilPencil, cilPlus, cilTrash } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import React, { useEffect, useState } from 'react'
 import CuisineAdd from './CuisineAdd'
 import CuisineUpdate from './CuisineUpdate'
 import AuthUser from '../../../auth/AuthUser'
+import { toast } from 'react-toastify'
 
 function CuisineList() {
   const [modalStates, setModalStates] = useState(false)
   const [updateModalStates, setUpdateModalStates] = useState(false)
   const [count, setCount] = useState(0)
   const { http } = AuthUser()
+  const [edit_data, setEditData] = useState(null)
   const [cuisines, setCuisines] = useState([])
   const getCuisinesList = async () => {
     http
       .get('/cuisines/list')
       .then((res) => {
-        if (res.data.length > 0) {
-          setCuisines(res.data)
+        if (res.data.data.length > 0) {
+          setCuisines(res.data.data)
         }
       })
       .catch((err) => {
@@ -38,6 +40,19 @@ function CuisineList() {
     window.addEventListener('keydown', handleShortcut)
     return () => window.removeEventListener('keydown', handleShortcut)
   }, [])
+  const deleteData = (id) => {
+    http
+      .delete(`/cuisines/delete/${id}`)
+      .then((res) => {
+        setCount(count + 1)
+        toast.success(res.data.message)
+      })
+      .catch((err) => {
+        console.log('====================================')
+        console.log(err)
+        console.log('====================================')
+      })
+  }
 
   return (
     <div className="card">
@@ -69,7 +84,33 @@ function CuisineList() {
                 <th>Active</th>
               </tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+              {cuisines.map((item, index) => (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+                  <td>{item.cuisine_name}</td>
+                  <td>{item.cuisine_status}</td>
+                  <td>
+                    <div
+                      className="btn btn-info shadow text-white btn-sm me-1"
+                      onClick={() => {
+                        setEditData(item)
+                      }}
+                    >
+                      <CIcon icon={cilPencil} />
+                    </div>
+                    <div
+                      className="btn btn-danger shadow text-white btn-sm"
+                      onClick={() => {
+                        deleteData(item._id)
+                      }}
+                    >
+                      <CIcon icon={cilTrash} />
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         </div>
       </div>
@@ -78,15 +119,16 @@ function CuisineList() {
           modalStates={modalStates}
           setModalStates={() => {
             setModalStates(!modalStates)
+            setCount(count + 1)
           }}
         />
       )}
-      {updateModalStates && (
+      {edit_data != null && (
         <CuisineUpdate
-          edit
-          modalStates={updateModalStates}
+          edit_data={edit_data}
+          modalStates={edit_data != null}
           setModalStates={() => {
-            setUpdateModalStates(!updateModalStates)
+            setEditData(null)
           }}
         />
       )}

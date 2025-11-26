@@ -1,6 +1,6 @@
 import { cilSave, cilX } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { toast } from 'react-toastify'
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
 import AuthUser from '../../../auth/AuthUser'
@@ -9,6 +9,8 @@ function CuisineAdd(props) {
   const [cuisine, setCuisine] = useState({
     cuisine_name: '',
   })
+  const submitRef = useRef(null)
+  const inputRef = useRef(null)
   const { http } = AuthUser()
   useEffect(() => {
     const handleShortcut = (e) => {
@@ -16,7 +18,8 @@ function CuisineAdd(props) {
         props.setModalStates()
       }
       if (e.altKey && e.key.toLowerCase() === 's') {
-        saveData()
+        submitRef.current.click()
+        inputRef.current.focus()
       }
     }
 
@@ -34,6 +37,7 @@ function CuisineAdd(props) {
             toast.error(res.data.message)
           } else {
             toast.success(res.data.message)
+            props.setModalStates()
           }
         })
         .catch((err) => {
@@ -57,6 +61,7 @@ function CuisineAdd(props) {
             <input
               className="form-control"
               placeholder="Cuisine Name"
+              ref={inputRef}
               value={cuisine.cuisine_name}
               onChange={(e) => {
                 setCuisine({
@@ -68,7 +73,7 @@ function CuisineAdd(props) {
           </div>
 
           <div className="text-end mt-4">
-            <div className="btn btn-success text-light shadow" onClick={saveData}>
+            <div ref={submitRef} className="btn btn-success text-light shadow" onClick={saveData}>
               <CIcon icon={cilSave} className="me-1 text-white" /> Save
             </div>
             <div className="ms-2 btn btn-danger text-light shadow" onClick={props.setModalStates}>
