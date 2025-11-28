@@ -1,6 +1,12 @@
 import React from 'react'
 import CustomerList from './views/pages/customer/CustomerList'
 import CuisineList from './views/pages/cuisine/CuisineList'
+import MealTypeList from './views/pages/mealtype/MealTypeList'
+import CookingDifficultyList from './views/pages/cookingdifficulty/CookingDifficultyList'
+import ServingCountList from './views/pages/servingcount/ServingCountList'
+import DesiredProductList from './views/pages/desiredproduct/DesiredProductList'
+import UnwantedProductList from './views/pages/unwantedproduct/UnwantedProductList'
+import PrepareTimeList from './views/pages/preparetime/PrepareTimeList'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
@@ -56,8 +62,18 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
+
+
   { path: '/customers', name: 'Customers', element: CustomerList },
   { path: '/cuisines', name: 'Cuisines', element: CuisineList },
+  { path: '/mealtype', name: 'mealtype', element: MealTypeList },
+  { path: '/cookingdifficulty', name: 'cookingdifficulty', element: CookingDifficultyList },
+  { path: '/servingcount', name: 'servingcount', element: ServingCountList },
+  { path: '/desiredproduct', name: 'desiredproduct', element: DesiredProductList },
+  { path: '/unwantedproduct', name: 'unwantedproduct', element: UnwantedProductList },
+  { path: '/preparetime', name: 'preparetime', element: PrepareTimeList },
+
+
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },
