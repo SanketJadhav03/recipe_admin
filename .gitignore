@@ -9,8 +9,7 @@ yarn.lock
 /coverage
 
 # production
-/build
-/src/helper
+/build 
 # misc
 .eslintcache
 .DS_Store
