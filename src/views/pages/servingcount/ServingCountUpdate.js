@@ -27,7 +27,7 @@ function ServingCountUpdate(props) {
       toast.error('ServingCounts Name Cannot be empty!')
     } else {
       http
-        .put('/servingcounts/update', servingcount)
+        .put(`/servingcounts/update/${servingcount._id}`, servingcount)
         .then((res) => {
           if (res.data.status == 0) {
             toast.error(res.data.message)

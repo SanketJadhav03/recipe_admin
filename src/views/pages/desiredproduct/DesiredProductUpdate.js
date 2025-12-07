@@ -27,7 +27,7 @@ function DesiredProductUpdate(props) {
       toast.error('DesiredProducts Name Cannot be empty!')
     } else {
       http
-        .put('/desiredproducts/update', desiredproduct)
+        .put(`/desiredproducts/update/${desiredproduct._id}`, desiredproduct)
         .then((res) => {
           if (res.data.status == 0) {
             toast.error(res.data.message)

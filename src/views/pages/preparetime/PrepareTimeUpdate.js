@@ -27,7 +27,7 @@ function PrepareTimeUpdate(props) {
       toast.error('PrepareTimes Name Cannot be empty!')
     } else {
       http
-        .put('/preparetimes/update', preparetime)
+        .put(`/preparetimes/update/${preparetime._id}`, preparetime)
         .then((res) => {
           if (res.data.status == 0) {
             toast.error(res.data.message)

@@ -27,7 +27,7 @@ function UnwantedProductUpdate(props) {
       toast.error('UnwantedProducts Name Cannot be empty!')
     } else {
       http
-        .put('/unwantedproducts/update', unwantedproduct)
+        .put(`/unwantedproducts/update/${unwantedproduct._id}`, unwantedproduct)
         .then((res) => {
           if (res.data.status == 0) {
             toast.error(res.data.message)

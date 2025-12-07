@@ -27,7 +27,7 @@ function CuisineUpdate(props) {
       toast.error('Cuisines Name Cannot be empty!')
     } else {
       http
-        .put('/cuisines/update', cuisine)
+        .put(`/cuisines/update/${cuisine._id}`, cuisine)
         .then((res) => {
           if (res.data.status == 0) {
             toast.error(res.data.message)

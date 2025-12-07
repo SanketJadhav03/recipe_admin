@@ -27,7 +27,7 @@ function MealTypeUpdate(props) {
       toast.error('MealTypes Name Cannot be empty!')
     } else {
       http
-        .put('/mealTypes/update', mealType)
+        .put(`/mealTypes/update/${mealType._id}`, mealType)
         .then((res) => {
           if (res.data.status == 0) {
             toast.error(res.data.message)
