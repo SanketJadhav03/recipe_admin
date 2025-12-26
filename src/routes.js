@@ -7,6 +7,7 @@ import ServingCountList from './views/pages/servingcount/ServingCountList'
 import DesiredProductList from './views/pages/desiredproduct/DesiredProductList'
 import UnwantedProductList from './views/pages/unwantedproduct/UnwantedProductList'
 import PrepareTimeList from './views/pages/preparetime/PrepareTimeList'
+import APIConfiguration from './views/pages/api-configuration/APIConfiguration'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
@@ -62,6 +63,7 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
+  { path: '/api-configuration', name: 'Api Configuration', element: APIConfiguration },
 
 
   { path: '/customers', name: 'Customers', element: CustomerList },

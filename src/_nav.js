@@ -1,29 +1,15 @@
 import React from 'react'
 import CIcon from '@coreui/icons-react'
 import {
-  cilBell,
-  cilCalculator,
-  cilChartPie,
   cilClock,
-  cilContact,
-  cilCursor,
-  cilDescription,
-  cilDrop,
   cilEnvelopeOpen,
-  cilExternalLink,
-  cilFilterFrames,
-  cilNotes,
-  cilPencil,
   cilPeople,
   cilPowerStandby,
-  cilPuzzle,
   cilSettings,
   cilSpeedometer,
-  cilStar,
-  cilUser,
-  cilUserPlus,
+  cilLink,
 } from '@coreui/icons'
-import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
+import { CNavGroup, CNavItem } from '@coreui/react'
 
 const _nav = [
   {
@@ -38,18 +24,27 @@ const _nav = [
     to: '/customers',
     icon: <CIcon icon={cilPeople} customClassName="nav-icon" />,
   },
-
   {
     component: CNavItem,
     name: 'Generated Recipes',
     to: '/generated-recipe',
     icon: <CIcon icon={cilClock} customClassName="nav-icon" />,
   },
-
+    {
+        component: CNavItem,
+        name: 'API Configuration',
+        to: '/api-configuration',
+        icon: <CIcon icon={cilLink} customClassName="nav-icon" />,
+      },
+{
+    component: CNavItem,
+    name: 'Contact Us',
+    to: '/contact',
+    icon: <CIcon icon={cilEnvelopeOpen} customClassName="nav-icon" />,
+  },
   {
     component: CNavGroup,
-    name: 'Recipe Settings',
-    to: '',
+    name: 'Settings',
     icon: <CIcon icon={cilSettings} customClassName="nav-icon" />,
     items: [
       {
@@ -87,15 +82,11 @@ const _nav = [
         name: 'Preparation Time',
         to: '/preparetime',
       },
+ 
     ],
   },
-  {
-    component: CNavItem,
-    name: 'Contact Us',
-    to: '/contact',
-    icon: <CIcon icon={cilEnvelopeOpen} customClassName="nav-icon" />, // better suited icon
-  },
 
+  
   {
     component: CNavItem,
     name: 'Logout',
