@@ -75,7 +75,7 @@ const APIConfiguration = () => {
               api_name: '',
               base_url: '',
               api_key: '',
-              status: 'Active',
+              status: 1,
             })
           } else toast.error(res.data.message)
         })
@@ -92,7 +92,7 @@ const APIConfiguration = () => {
               api_name: '',
               base_url: '',
               api_key: '',
-              status: 'Active',
+              status: 1,
             })
           } else toast.error(res.data.message)
         })
@@ -215,7 +215,7 @@ const APIConfiguration = () => {
                   <CTableDataCell>{item.base_url}</CTableDataCell>
                   <CTableDataCell>
                     <CBadge
-                      color={item.status === 'Active' ? 'success' : 'secondary'}
+                      color={item.status === '1' ? 'success' : 'secondary'}
                     >
                       {item.status}
                     </CBadge>
