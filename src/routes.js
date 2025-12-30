@@ -8,6 +8,7 @@ import DesiredProductList from './views/pages/desiredproduct/DesiredProductList'
 import UnwantedProductList from './views/pages/unwantedproduct/UnwantedProductList'
 import PrepareTimeList from './views/pages/preparetime/PrepareTimeList'
 import APIConfiguration from './views/pages/api-configuration/APIConfiguration'
+import RecipeList from './views/pages/RecipeGenrate/RecipeList'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
@@ -74,6 +75,7 @@ const routes = [
   { path: '/desiredproduct', name: 'desiredproduct', element: DesiredProductList },
   { path: '/unwantedproduct', name: 'unwantedproduct', element: UnwantedProductList },
   { path: '/preparetime', name: 'preparetime', element: PrepareTimeList },
+  { path: '/generated-recipe', name: 'preparetime', element: RecipeList },
 
 
   { path: '/theme', name: 'Theme', element: Colors, exact: true },

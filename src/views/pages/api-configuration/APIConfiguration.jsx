@@ -25,23 +25,29 @@ import AuthUser from '../../../auth/AuthUser'
 
 const APIConfiguration = () => {
   const { http } = AuthUser()
+
   const [apiList, setApiList] = useState([])
+  const [editId, setEditId] = useState(null)
+
   const [formData, setFormData] = useState({
     api_name: '',
     base_url: '',
     api_key: '',
-    status: 'Active',
+    status: 1, // number
   })
-  const [editId, setEditId] = useState(null)
+
   const submitRef = useRef(null)
 
-  /* ================= FETCH EXISTING API LIST ================= */
+  /* ================= FETCH API LIST ================= */
   const fetchApiList = () => {
     http
       .get('/appconfig/list')
       .then((res) => {
-        if (res.data.status === 1) setApiList(res.data.data)
-        else setApiList([])
+        if (res.data.status === 1) {
+          setApiList(res.data.data)
+        } else {
+          setApiList([])
+        }
       })
       .catch(() => toast.error('Failed to fetch API list'))
   }
@@ -50,54 +56,73 @@ const APIConfiguration = () => {
     fetchApiList()
   }, [])
 
-  /* ================= HANDLE FORM CHANGE ================= */
+  /* ================= HANDLE INPUT CHANGE ================= */
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    })
   }
 
-  /* ================= ADD OR UPDATE API ================= */
+  /* ================= ADD / UPDATE API ================= */
   const handleAddOrUpdate = () => {
     if (!formData.api_name || !formData.base_url) {
-      toast.error('API Name and Base URL are required!')
+      toast.error('API Name and Base URL are required')
       return
     }
 
-    if (editId) {
-      // Update API
+    // ADD API
+    if (!editId) {
       http
-        .put('/appconfig/update', { ...formData, id: editId })
-        .then((res) => {
-          if (res.data.status === 1) {
-            toast.success(res.data.message)
-            fetchApiList()
-            setEditId(null)
-            setFormData({
-              api_name: '',
-              base_url: '',
-              api_key: '',
-              status: 1,
-            })
-          } else toast.error(res.data.message)
+        .post('/appconfig/store', {
+          api_name: formData.api_name,
+          base_url: formData.base_url,
+          api_key: formData.api_key,
+          status: Number(formData.status),
         })
-        .catch(() => toast.error('Server error'))
-    } else {
-      // Add new API
-      http
-        .post('/appconfig/store', formData)
         .then((res) => {
           if (res.data.status === 1) {
             toast.success(res.data.message)
             fetchApiList()
-            setFormData({
-              api_name: '',
-              base_url: '',
-              api_key: '',
-              status: 1,
-            })
-          } else toast.error(res.data.message)
+            resetForm()
+          } else {
+            toast.error(res.data.message)
+          }
         })
         .catch(() => toast.error('Server error'))
     }
+
+    // UPDATE API
+    else {
+      http
+        .put(`/appconfig/update/${editId}`, {
+          api_name: formData.api_name,
+          base_url: formData.base_url,
+          api_key: formData.api_key,
+          status: Number(formData.status),
+        })
+        .then((res) => {
+          if (res.data.status === 1) {
+            toast.success(res.data.message)
+            fetchApiList()
+            resetForm()
+          } else {
+            toast.error(res.data.message)
+          }
+        })
+        .catch(() => toast.error('Server error'))
+    }
+  }
+
+  /* ================= RESET FORM ================= */
+  const resetForm = () => {
+    setFormData({
+      api_name: '',
+      base_url: '',
+      api_key: '',
+      status: 1,
+    })
+    setEditId(null)
   }
 
   /* ================= EDIT API ================= */
@@ -105,14 +130,19 @@ const APIConfiguration = () => {
     setFormData({
       api_name: item.api_name,
       base_url: item.base_url,
-      api_key: item.api_key,
+      api_key: item.api_key || '',
       status: item.status,
     })
-    setEditId(item.id)
+    setEditId(item._id) // ✅ FIX
   }
 
   /* ================= DELETE API ================= */
   const handleDelete = (id) => {
+    if (!id) {
+      toast.error('Invalid API ID')
+      return
+    }
+
     if (!window.confirm('Are you sure you want to delete this API?')) return
 
     http
@@ -121,7 +151,9 @@ const APIConfiguration = () => {
         if (res.data.status === 1) {
           toast.success(res.data.message)
           fetchApiList()
-        } else toast.error(res.data.message)
+        } else {
+          toast.error(res.data.message)
+        }
       })
       .catch(() => toast.error('Server error'))
   }
@@ -131,16 +163,16 @@ const APIConfiguration = () => {
       <CCardHeader className="fw-semibold">API Configuration</CCardHeader>
 
       <CCardBody>
-        {/* ADD / EDIT API FORM */}
+        {/* FORM */}
         <CForm className="mb-4">
           <CRow className="g-3">
             <CCol md={3}>
               <CFormLabel>API Name</CFormLabel>
               <CFormInput
                 name="api_name"
-                placeholder="e.g. Google Maps"
                 value={formData.api_name}
                 onChange={handleChange}
+                placeholder="Google Maps"
               />
             </CCol>
 
@@ -148,19 +180,19 @@ const APIConfiguration = () => {
               <CFormLabel>Base URL</CFormLabel>
               <CFormInput
                 name="base_url"
-                placeholder="https://api.example.com"
                 value={formData.base_url}
                 onChange={handleChange}
+                placeholder="https://api.example.com"
               />
             </CCol>
 
             <CCol md={3}>
-              <CFormLabel>API Key (Reference)</CFormLabel>
+              <CFormLabel>API Key</CFormLabel>
               <CFormInput
                 name="api_key"
-                placeholder="Stored securely in backend"
                 value={formData.api_key}
                 onChange={handleChange}
+                placeholder="Stored securely"
               />
             </CCol>
 
@@ -171,8 +203,8 @@ const APIConfiguration = () => {
                 value={formData.status}
                 onChange={handleChange}
               >
-                <option>Active</option>
-                <option>Inactive</option>
+                <option value={1}>Active</option>
+                <option value={0}>Inactive</option>
               </CFormSelect>
             </CCol>
 
@@ -188,7 +220,7 @@ const APIConfiguration = () => {
           </CRow>
         </CForm>
 
-        {/* API LIST TABLE */}
+        {/* TABLE */}
         <CTable hover responsive bordered>
           <CTableHead>
             <CTableRow>
@@ -203,21 +235,21 @@ const APIConfiguration = () => {
           <CTableBody>
             {apiList.length === 0 ? (
               <CTableRow>
-                <CTableDataCell colSpan="5" className="text-center text-muted">
+                <CTableDataCell colSpan={5} className="text-center text-muted">
                   No APIs configured
                 </CTableDataCell>
               </CTableRow>
             ) : (
               apiList.map((item, index) => (
-                <CTableRow key={item.id}>
+                <CTableRow key={item._id}>
                   <CTableDataCell>{index + 1}</CTableDataCell>
                   <CTableDataCell>{item.api_name}</CTableDataCell>
                   <CTableDataCell>{item.base_url}</CTableDataCell>
                   <CTableDataCell>
                     <CBadge
-                      color={item.status === '1' ? 'success' : 'secondary'}
+                      color={item.status === 1 ? 'success' : 'secondary'}
                     >
-                      {item.status}
+                      {item.status === 1 ? 'Active' : 'Inactive'}
                     </CBadge>
                   </CTableDataCell>
                   <CTableDataCell>
@@ -232,7 +264,7 @@ const APIConfiguration = () => {
                     <CButton
                       color="danger"
                       size="sm"
-                      onClick={() => handleDelete(item.id)}
+                      onClick={() => handleDelete(item._id)}
                     >
                       <CIcon icon={cilTrash} />
                     </CButton>
