@@ -1,17 +1,43 @@
-import { cilScreenSmartphone, cilSend } from '@coreui/icons'
+import { cilScreenSmartphone, cilSend, cilTrash, cilHistory } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
-import React, { useState } from 'react'
-import axios from 'axios'
+import React, { useState, useEffect } from 'react'
+import AuthUser from '../../../auth/AuthUser' // ✅ Correctly Imported AuthUser
 import { toast } from 'react-toastify'
 
 function SendPush() {
+  const { http } = AuthUser() 
+  
+ 
   const [title, setTitle] = useState('')
   const [message, setMessage] = useState('')
   const [imageUrl, setImageUrl] = useState('')
   const [loading, setLoading] = useState(false)
 
+ 
+  const [notifications, setNotifications] = useState([])
+  const [count, setCount] = useState(0) 
+
+
+  const getNotificationList = async () => {
+    http.get('/notification/list')
+      .then((res) => {
+        if (res.data.status === 1) {
+          setNotifications(res.data.data)
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching list:", err)
+      })
+  }
+
+
+  useEffect(() => {
+    getNotificationList()
+  }, [count])
+
+
   const handleSend = async () => {
-    // 1. Validation
+
     if (!title || !message) {
       toast.error("Please enter title and message")
       return
@@ -19,51 +45,64 @@ function SendPush() {
 
     setLoading(true)
 
-    // 2. Data Preparation
     const payload = {
       title: title,
       message: message,
-      imageUrl: imageUrl // Optional Image
+      imageUrl: imageUrl 
     }
 
-    // 3. Connect to YOUR Node.js Backend
-    // तुमच्या server.js मध्ये PORT 8080 आहे, म्हणून 8080 वापरा
-    const BACKEND_URL = "http://localhost:8080/api/send-notification";
+    http.post('/notification/send', payload)
+      .then((res) => {
+        if (res.data.status === 1) {
+          toast.success("Notification Sent Successfully! 🚀")
 
-    try {
-      const response = await axios.post(BACKEND_URL, payload);
-      
-      if(response.data.success) {
-        toast.success("Notification Sent Successfully! 🚀")
-        // Reset Form
-        setTitle('')
-        setMessage('')
-        setImageUrl('')
-      } else {
-        toast.error("Failed to send notification.")
-      }
+          setTitle('')
+          setMessage('')
+          setImageUrl('')
 
-    } catch (error) {
-      console.log('Error:', error)
-      toast.error("Error: Could not connect to Backend (Check if Node Server is running on 8080)")
-    } finally {
-      setLoading(false)
-    }
+          setCount(count + 1)
+        } else {
+          toast.error("Failed to send notification.")
+        }
+      })
+      .catch((err) => {
+        console.error('Error:', err)
+        toast.error("Error connecting to server")
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }
+
+
+  const deleteData = (id) => {
+    if(!window.confirm("Are you sure you want to delete this history record?")) return;
+
+    http.delete(`/notification/delete/${id}`)
+      .then((res) => {
+        if(res.data.status === 1){
+            toast.success(res.data.message)
+            setCount(count + 1) 
+        } else {
+            toast.error("Failed to delete")
+        }
+      })
+      .catch((err) => {
+        console.error(err)
+        toast.error("Error deleting record")
+      })
   }
 
   return (
-    <div className="card">
-      <div className="card-body border-bottom">
-        <div className="row">
-          <div className="col-12">
-            <h2>Send App Notification</h2>
+    <div className="row">
+      <div className="col-md-5">
+        <div className="card h-100">
+          <div className="card-header bg-white">
+            <h4 className="mb-0 mt-2">
+               <CIcon icon={cilScreenSmartphone} className="me-2" /> Send Notification
+            </h4>
           </div>
-        </div>
-      </div>
-      <div className="card-body">
-        <div className="row">
-          {/* Title Input */}
-          <div className="col-md-12">
+          <div className="card-body">
             <div className="mb-3">
               <label className="form-label">Notification Title</label>
               <input
@@ -74,10 +113,7 @@ function SendPush() {
                 onChange={(e) => setTitle(e.target.value)}
               />
             </div>
-          </div>
 
-          {/* Message Input */}
-          <div className="col-md-12">
             <div className="mb-3">
               <label className="form-label">Message</label>
               <textarea
@@ -88,10 +124,7 @@ function SendPush() {
                 onChange={(e) => setMessage(e.target.value)}
               ></textarea>
             </div>
-          </div>
 
-          {/* Image URL Input */}
-          <div className="col-md-12">
             <div className="mb-3">
               <label className="form-label">Image URL (Optional)</label>
               <input
@@ -101,20 +134,74 @@ function SendPush() {
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
               />
-              <div className="form-text">Paste a direct image link to show a big picture in the App.</div>
             </div>
-          </div>
 
-          {/* Submit Button */}
-          <div className="col-12 mt-2">
             <button
-              className="btn btn-success text-white"
+              className="btn btn-success text-white w-100"
               onClick={handleSend}
               disabled={loading}
             >
-              <CIcon icon={cilScreenSmartphone} className="me-2" />
-              {loading ? "Sending..." : "Send to All Devices"}
+              <CIcon icon={cilSend} className="me-2" />
+              {loading ? "Sending..." : "Send Now"}
             </button>
+          </div>
+        </div>
+      </div>
+
+      {/* --- RIGHT SIDE: HISTORY LIST --- */}
+      <div className="col-md-7">
+        <div className="card h-100">
+           <div className="card-header bg-white">
+            <h4 className="mb-0 mt-2">
+               <CIcon icon={cilHistory} className="me-2" /> History
+            </h4>
+          </div>
+          <div className="card-body p-0">
+            <div className="table-responsive">
+              <table className="table table-hover table-striped mb-0">
+                <thead className="table-light">
+                  <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Message</th>
+                    <th>Date</th>
+                    <th className="text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {notifications.length === 0 ? (
+                      <tr>
+                          <td colSpan="5" className="text-center p-4">No notifications sent yet.</td>
+                      </tr>
+                  ) : (
+                      notifications.map((item, index) => (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td className="fw-bold">{item.notification_title}</td>
+                          <td>
+                              {/* Truncate long messages for cleaner table */}
+                              <small className="text-muted" style={{display:'block', maxWidth:'200px', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis'}}>
+                                  {item.notification_message}
+                              </small>
+                          </td>
+                          <td>
+                              <small>{new Date(item.created_at).toLocaleDateString()}</small>
+                          </td>
+                          <td className="text-center">
+                            <button
+                              className="btn btn-danger btn-sm text-white shadow-sm"
+                              onClick={() => deleteData(item._id)}
+                              title="Delete History"
+                            >
+                              <CIcon icon={cilTrash} />
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
