@@ -9,6 +9,9 @@ import './scss/style.scss'
 import './scss/examples.scss'
 import PrivateRoute from './auth/PrivateRoutes' 
 
+// 1. OneSignal Import करा
+import OneSignal from 'react-onesignal'
+
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
 
@@ -22,6 +25,21 @@ const App = () => {
   const { isColorModeSet, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
   const storedTheme = useSelector((state) => state.theme)
 
+  // 2. OneSignal Initialization साठी नवीन useEffect
+  useEffect(() => {
+    // OneSignal ला सुरु करा
+    OneSignal.init({
+      appId: "1124f496-e550-46bb-bdef-a45bff90c82d", // !!! इथे तुमचा OneSignal App ID टाका !!!
+      allowLocalhostAsSecureOrigin: true, // Localhost वर टेस्ट करण्यासाठी True ठेवा
+    }).then(() => {
+      console.log("OneSignal Initialized");
+      // युजरला नोटिफिकेशनसाठी परवानगी (Prompt) दाखवा
+      OneSignal.Slidedown.promptPush();
+    });
+  }, []); // [] म्हणजे हे फक्त एकदाच रन होईल
+
+
+  // Existing Theme Logic (हे आहे तसेच ठेवा)
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.href.split('?')[1])
     const theme = urlParams.get('theme') && urlParams.get('theme').match(/^[A-Za-z0-9\s]+/)[0]

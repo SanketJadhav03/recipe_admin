@@ -31,6 +31,12 @@ const _nav = [
     icon: <CIcon icon={cilClock} customClassName="nav-icon" />,
   },
     {
+    component: CNavItem,
+    name: 'Send Notificvation',
+    to: '/send-notification',
+    icon: <CIcon icon={cilClock} customClassName="nav-icon" />,
+  },
+    {
         component: CNavItem,
         name: 'API Configuration',
         to: '/api-configuration',
