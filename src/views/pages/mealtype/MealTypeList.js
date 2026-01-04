@@ -75,11 +75,13 @@ function MealTypeList() {
       </div>
       <div className="card-body">
         <div className="table-responsive">
-          <table className="table text-center">
+          <table className="table text">
             <thead>
               <tr>
                 <th>#</th>
                 <th>Name</th>
+                    <th>Marathi</th>
+                <th>Hindi</th>
                 <th>Status</th>
                 <th>Active</th>
               </tr>
@@ -89,6 +91,8 @@ function MealTypeList() {
                 <tr key={index}>
                   <td>{index + 1}</td>
                   <td>{item.mealType_name}</td>
+                  <td>{item.mealType_marathi_name}</td>
+                  <td>{item.mealType_hindi_name}</td>
                   <td>
                     {item.mealType_status == 1 ? (
                       <div className="badge bg-success">Active</div>

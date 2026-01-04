@@ -80,6 +80,8 @@ function CuisineList() {
               <tr>
                 <th>#</th>
                 <th>Name</th>
+                <th>Marathi</th>
+                <th>Hindi</th>
                 <th>Status</th>
                 <th>Active</th>
               </tr>
@@ -89,6 +91,8 @@ function CuisineList() {
                 <tr key={index}>
                   <td>{index + 1}</td>
                   <td>{item.cuisine_name}</td>
+                  <td>{item.cuisine_marathi_name}</td>
+                  <td>{item.cuisine_hindi_name}</td>
                   <td>
                     {item.cuisine_status == 1 ? (
                       <div className="badge bg-success">Active</div>
